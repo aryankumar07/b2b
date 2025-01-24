@@ -1,10 +1,11 @@
 import 'dotenv/config'
-import express, { NextFunction, Request, Response, urlencoded } from 'express'
+import express, { NextFunction, Request, Response } from 'express'
 import session from 'cookie-session'
 import cors from 'cors'
 import { config } from './config/app.config'
 import connectToDb from './config/database.config'
-
+import { errorHandler } from './middleware/errorHandle.middleware'
+import { asyncHandler } from "./middleware/asyncHandler.middleware"
 
 const app = express();
 const BASE_PATH = config.BASE_PATH;
@@ -30,11 +31,16 @@ app.use(cors({
 }))
 
 
-app.get('/', (req: Request, res: Response, next: NextFunction) => {
+
+
+app.get('/', asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     res.status(200).json({
-        message: "working just fine"
+        message: "everything well"
     })
-})
+}))
+
+
+app.use(errorHandler)
 
 connectToDb()
     .then(() => {
